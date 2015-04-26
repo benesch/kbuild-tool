@@ -7,16 +7,15 @@
 # What library to link
 ldflags()
 {
-	for ext in so a dylib ; do
-		for lib in ncursesw ncurses curses ; do
-			$cc -print-file-name=lib${lib}.${ext} | grep -q /
-			if [ $? -eq 0 ]; then
-				echo "-l${lib}"
-				exit
-			fi
-		done
-	done
-	exit 1
+	if [ -f /usr/include/ncurses/ncurses.h ] || \
+		 [ -f /usr/include/ncurses/curses.h ] || \
+		 [ -f /usr/include/ncurses.h ]; then
+		echo '-lncurses'
+	elif [ -f /usr/include/ncursesw/curses.h ]; then
+		echo '-lncursesw'
+	else
+		echo '-lcurses'
+	fi
 }
 
 # Where is ncurses.h?
